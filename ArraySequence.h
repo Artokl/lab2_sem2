@@ -2,10 +2,8 @@
 #define ARRAYSEQUENCE_H
 
 #include <stdexcept>
-
 #include "DynamicArray.h"
 #include "Sequence.h"
-
 
 template <typename T> class ArraySequence: public Sequence<T> {
 protected:
@@ -36,19 +34,19 @@ public:
     {
         delete this->array;
     }
-    T GetFirst() override
+    T GetFirst() const override
     {
         return this->array->Get(0);
     }
-    T GetLast() override
+    T GetLast() const override
     {
         return this->array->Get(this->array->GetSize() - 1);
     }
-    T Get(int index) const override
+    T Get(int index) override
     {
         return this->array->Get(index);
     }
-    int GetLength() const override
+    int GetLength() override
     {
         return this->array->GetSize();
     }
@@ -92,79 +90,76 @@ private:
       return static_cast<ArraySequence<T> *> (this);
   }
 public:
-  using ArraySequence<T>::ArraySequence;
-  MutableArraySequence<T> *Concat (Sequence<T> &list) override
-  {
-      MutableArraySequence<T> *presentResult = new MutableArraySequence<T> ();
-      for (int i = 0; i < this->GetLength (); i++)
+    using ArraySequence<T>::ArraySequence;
+    MutableArraySequence<T> *Concat (Sequence<T> &list) override
+    {
+        MutableArraySequence<T> *presentResult = new MutableArraySequence<T> ();
+        for (int i = 0; i < this->GetLength (); i++)
+          {
+              presentResult->Append (this->Get (i));
+          }
+        for (int i = 0; i < list.GetLength (); i++)
+          {
+              presentResult->Append (list.Get(i));
+          }
+        return presentResult;
+    }
+    MutableArraySequence<T> *GetSubSequence (int startIndex, int endIndex) override
+    {
+        if (startIndex < 0 || endIndex < 0 || startIndex >= this->array->GetSize() || endIndex < startIndex)
         {
-            presentResult->Append (this->Get (i));
+            throw std::invalid_argument("Invalid argument");
         }
-      for (int i = 0; i < list.GetLength (); i++)
-        {
-            presentResult->Append (list.Get(i));
-        }
-      return presentResult;
-  }
-
-  MutableArraySequence<T> *GetSubSequence (int startIndex, int endIndex) override
-  {
-      if (startIndex < 0 || endIndex < 0 || startIndex >= this->array->GetSize() || endIndex < startIndex)
-      {
-          throw std::invalid_argument("Invalid argument");
-      }
-      MutableArraySequence<T> *presentResult = new MutableArraySequence ();
-      for (int i = 0; i <= endIndex - startIndex; i++)
-        {
-            presentResult->Append (this->Get (startIndex + i - 1));
-        }
-      return presentResult;
-  }
+        MutableArraySequence<T> *presentResult = new MutableArraySequence ();
+        for (int i = 0; i <= endIndex - startIndex; i++)
+          {
+              presentResult->Append (this->Get (startIndex + i - 1));
+          }
+        return presentResult;
+    }
 };
 
 template <typename T> class ImmutableArraySequence : public ArraySequence<T>
 {
 private:
-  ArraySequence<T> *GetInstance () override
-  {
-      ImmutableArraySequence<T> *result = new ImmutableArraySequence (this->GetLength ());
-      for (int i = 0; i < this->GetLength (); i++)
-      {
-          result->array[i] = this->array[i];
-      }
-      return result;
-  }
+    ArraySequence<T> *GetInstance () override
+    {
+        ImmutableArraySequence<T> *result = new ImmutableArraySequence (this->GetLength ());
+        for (int i = 0; i < this->GetLength (); i++)
+        {
+            result->array[i] = this->array[i];
+        }
+        return result;
+    }
 public:
-  using ArraySequence<T>::ArraySequence;
-  ImmutableArraySequence<T> *Concat (Sequence<T> &array) override
-  {
-      MutableArraySequence<T> *present = new MutableArraySequence<T> ();
-      for (int i = 0; i < this->GetLength (); i++)
-        {
-          present->Append (this->Get (i));
-        }
-      for (int i = 0; i < array.GetLength (); i++)
-        {
-          present->Append (array.Get (i));
-        }
-      ImmutableArraySequence<T> *result = new ImmutableArraySequence<T> ();
-      for (int i = 0; i < present->GetLength (); i++)
-        {
-          result->Append (present->Get (i));
-        }
-      delete present;
-      return result;
-  }
-
-  ImmutableArraySequence<T> *GetSubSequence (int startIndex, int endIndex) override
-  {
-      if (startIndex < 0 || endIndex < startIndex
-          || endIndex >= this->GetLength ())
-        {
-          throw std::invalid_argument ("invalid argument");
-        }
-      ImmutableArraySequence<T> *result = new ImmutableArraySequence<T> (&(*(this->array))[startIndex], endIndex - startIndex + 1);
-      return result;
-  }
+    using ArraySequence<T>::ArraySequence;
+    ImmutableArraySequence<T> *Concat (Sequence<T> &array) override
+    {
+        MutableArraySequence<T> *present = new MutableArraySequence<T> ();
+        for (int i = 0; i < this->GetLength (); i++)
+          {
+            present->Append (this->Get (i));
+          }
+        for (int i = 0; i < array.GetLength (); i++)
+          {
+            present->Append (array.Get (i));
+          }
+        ImmutableArraySequence<T> *result = new ImmutableArraySequence<T> ();
+        for (int i = 0; i < present->GetLength (); i++)
+          {
+            result->Append (present->Get (i));
+          }
+        delete present;
+        return result;
+    }
+    ImmutableArraySequence<T> *GetSubSequence (int startIndex, int endIndex) override
+    {
+        if (startIndex < 0 || endIndex < startIndex || endIndex >= this->GetLength ())
+          {
+            throw std::invalid_argument ("invalid argument");
+          }
+        ImmutableArraySequence<T> *result = new ImmutableArraySequence<T> (&(*(this->array))[startIndex], endIndex - startIndex + 1);
+        return result;
+    }
 };
 #endif //ARRAYSEQUENCE_H

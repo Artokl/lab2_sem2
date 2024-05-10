@@ -1,6 +1,8 @@
 #ifndef DYNAMICARRAY_H
 #define DYNAMICARRAY_H
 
+#include <iostream>
+
 template <typename T> class DynamicArray
 {
 private:
@@ -8,8 +10,7 @@ private:
     T *elements;
     int capacity{};
 
-    void Reserve (int newCapacity)
-    {
+    void Reserve (int newCapacity) {
         if (newCapacity <= capacity)
         {
             capacity = newCapacity;
@@ -48,6 +49,7 @@ public:
     {
         this->size = size;
         this->capacity = size+1;
+        this->elements = nullptr;
         if (size < 0)
         {
             throw std::out_of_range ("invalid size argument");
@@ -64,7 +66,7 @@ public:
     }
     T Get (int index)
     {
-        if (index < 0 || index >= this->size)
+        if (index < 0 || index > this->size)
         {
             throw std::out_of_range ("invalid argument");
         }
@@ -76,7 +78,7 @@ public:
     }
     void Set (const T &value, int index)
     {
-        if (index < 0 || index >= this->size)
+        if (index < 0 || index > this->size)
         {
             throw std::out_of_range ("invalid argument");
         }
@@ -97,21 +99,24 @@ public:
         {
             delete[] this->elements;
             this->elements = nullptr;
+            this->capacity = 0;
         }
-        else if (newSize > this->capacity)
+        else if (newSize >= this->capacity)
         {
             Reserve (newSize * 2);
         }
         else if (newSize < this->size)
         {
             T *Newelements = new T[newSize];
-            for (int i = 0; i < newSize; i++) {
+            for (int i = 0; i < newSize; i++)
+            {
                 Newelements[i] = this->elements[i];
             }
-            delete this->elements;
-            elements = Newelements;
+            delete[] this->elements;
+            this->elements = Newelements;
+            this->capacity = newSize;
         }
-        size = newSize;
+        this->size = newSize;
     }
 };
 

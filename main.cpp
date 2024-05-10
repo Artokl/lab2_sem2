@@ -1,19 +1,58 @@
 #include <iostream>
-#include "DynamicArray.h"
-#include "LinkedList.h"
-#include "Sequence.h"
-
-
+#include "TestsDynamicArray.h"
+#include "TestsLinkedList.h"
+#include "TestsArraySequence.h"
+#include "TestsListSequence.h"
+#include "ui.h"
 
 int main() {
-    int A[] = {1, 2, 3, 4};
-    DynamicArray<int> B (A,4);
-    LinkedList<int> C(A, 4);
-    C.InsertAt(9,2);
-    std::cout << C.Get(2) << std::endl;
-    std::cout << C.GetLength() << std::endl;
-    B.Resize(3);
-    std::cout << B.GetSize() << std::endl;
-    std::cout << B.Get(2) << std::endl;
+    int status = 0;
+    int flag = 1;
+    startmenu();
+    while (flag) {
+        std::cin >> status;
+        switch (status)
+        {
+            case 0:
+            {
+                flag = 0;
+                print(status);
+                break;
+            }
+            case 1:
+            {
+                TestsDynamicArray();
+                print(status);
+                break;
+            }
+            case 2:
+            {
+                TestsLinkedList();
+                print(status);
+                break;
+            }
+            case 3:
+            {
+                TestsArraySequence();
+                print(status);
+                break;
+            }
+            case 4:
+            {
+                TestsListSequence();
+                print(status);
+                break;
+            }
+            default:
+            {
+                print(status);
+                break;
+            }
+        }
+        if (status != 0)
+        {
+            startmenu();
+        }
+    }
     return 0;
 }

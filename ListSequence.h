@@ -27,11 +27,11 @@ public:
     {
         this->list = list;
     }
-    ListSequence (const LinkedList<T>& list)
+    ListSequence (const LinkedList<T> &list)
     {
         this->list = new LinkedList<T>(list);
     }
-    virtual ~ListSequence()
+    ~ListSequence()
     {
         delete this->list;
     }
@@ -70,6 +70,7 @@ public:
         return result;
     }
 };
+
 template <typename T> class MutableListSequence : public ListSequence<T>
 {
 private:
@@ -79,12 +80,16 @@ private:
     }
 public:
     using ListSequence<T>::ListSequence;
-    MutableListSequence<T> *Concat(Sequence<T> &elements) override
+    MutableListSequence<T> *Concat(Sequence<T> &array) override
     {
-        MutableListSequence<T> *result = new MutableListSequence<T>(static_cast<Sequence<T> &>(*this));
-        for (int i = 0; i < elements.GetLength(); i++)
+        MutableListSequence<T> *result = new MutableListSequence<T>;
+        for (int i = 0; i < this->GetLength(); i++)
         {
-            result->Append(elements.Get(i));
+            result->Append(this->Get(i));
+        }
+        for (int i = 0; i < array.GetLength(); i++)
+        {
+            result->Append(array.Get(i));
         }
         return result;
     }
@@ -95,15 +100,16 @@ public:
             throw std::invalid_argument("invalid argument");
         }
         T *present = new T[endIndex - startIndex + 1];
-        for (int i = 0; i < endIndex - startIndex + 1; i++)
+        for (int i = startIndex; i <= endIndex; i++)
         {
-            present[i] = this->Get(startIndex + i - 1);
+            present[i-startIndex] = this->Get(i);
         }
         MutableListSequence<T> *result = new MutableListSequence<T>(present, endIndex - startIndex + 1);
         delete[] present;
         return result;
     }
 };
+
 template <typename T> class ImmutableListSequence : public ListSequence<T>
 {
 private:
@@ -116,14 +122,18 @@ private:
 public:
     using ListSequence<T>::ListSequence;
 
-    ImmutableListSequence<T> *Concat(Sequence<T> &elements) override
+    ImmutableListSequence<T> *Concat(Sequence<T> &array) override
     {
-        MutableListSequence<T> *present = new MutableListSequence<T>(static_cast<Sequence<T> &>(*this));
-        for (int i = 0; i < elements.GetLength(); i++)
+        MutableListSequence<T> *present = new MutableListSequence<T>;
+        for (int i = 0; i < array.GetLength(); i++)
         {
-            present->Append(elements.Get(i));
+            present->Append(array.Get(i));
         }
-        ImmutableListSequence<T> *result = new ImmutableListSequence<T>(*present);
+        ImmutableListSequence<T> *result = new ImmutableListSequence<T>();
+        for (int i = 0; i < present->GetLength (); i++)
+        {
+            result->Append (present->Get (i));
+        }
         delete present;
         return result;
     }
@@ -140,4 +150,74 @@ public:
         return result;
     }
 };
+
+/*
+template <typename T> class MutableListSequence : public ListSequence<T>
+{
+private:
+    ListSequence<T> *GetInstance() override
+    {
+        return static_cast<ListSequence<T> *> (this);
+    }
+public:
+    using ListSequence<T>::ListSequence;
+    MutableListSequence<T> *Concat(Sequence<T> &seq) override
+    {
+        for (int i = 0; i < seq.GetLength(); i++)
+        {
+            this->Append(seq.Get(i));
+        }
+        return this;
+    }
+    MutableListSequence<T> *GetSubSequence(int startIndex, int endIndex) override
+    {
+        if (startIndex < 0 || endIndex < 0 || startIndex >= this->list->GetLength() || endIndex < startIndex)
+        {
+            throw std::invalid_argument("Invalid argument");
+        }
+        LinkedList<T> *resultList = this->list->GetSubList(startIndex, endIndex);
+        MutableListSequence<T> *result = new MutableListSequence<T>(resultList);
+        result->list = resultList;
+        return result;
+    }
+};
+
+template <typename T> class ImmutableListSequence : public ListSequence<T>
+{
+private:
+    ListSequence<T> *GetInstance() override
+    {
+        ImmutableListSequence<T> *instance = new ImmutableListSequence<T> (*this);
+        return instance;
+    }
+
+public:
+    using ListSequence<T>::ListSequence;
+    ImmutableListSequence<T> *Concat(Sequence<T> &seq) override
+    {
+        LinkedList<T> *resultList = new LinkedList<T>;
+        for (int i = 0; i < this->GetLength(); i++)
+        {
+            resultList->Append(this->Get(i));
+        }
+        for (int i = 0; i < seq.GetLength(); i++)
+        {
+            resultList->Append(seq.Get(i));
+        }
+        ImmutableListSequence<T> *result = new ImmutableListSequence<T>(resultList);
+        return result;
+    }
+    ImmutableListSequence<T> *GetSubSequence(int startIndex, int endIndex) override
+    {
+        if (startIndex < 0 || endIndex < 0 || startIndex >= this->list->GetLength() || endIndex < startIndex)
+        {
+            throw std::invalid_argument("Invalid argument");
+        }
+        LinkedList<T> *resultList = this->list->GetSubList(startIndex, endIndex);
+        ImmutableListSequence<T> *result = new ImmutableListSequence<T>(resultList);
+        result->list = resultList;
+        return result;
+    }
+};
+*/
 #endif //LISTSEQUENCE_H

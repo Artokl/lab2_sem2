@@ -3,10 +3,12 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="ClangTidy" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppAccessSpecifierWithNoDeclarations" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CppDFAConstantFunctionResult" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppDFAUnreachableFunctionCall" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppEnforceOverridingDestructorStyle" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppJoinDeclarationAndAssignment" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppNonExplicitConvertingConstructor" enabled="false" level="HINT" enabled_by_default="false" />
+    <inspection_tool class="CppNonInlineFunctionDefinitionInHeaderFile" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="CppParameterMayBeConst" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantAccessSpecifier" enabled="false" level="HINT" enabled_by_default="false" />
     <inspection_tool class="CppRedundantTemplateArguments" enabled="false" level="HINT" enabled_by_default="false" />

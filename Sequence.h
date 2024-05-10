@@ -10,9 +10,9 @@ public:
     virtual int GetLength () = 0;
 
     virtual Sequence<T> *GetSubSequence (int startIndex, int endIndex) = 0;
-    virtual Sequence<T> *Append (const T &item) = 0;
-    virtual Sequence<T> *Prepend (const T &item) = 0;
-    virtual Sequence<T> *InsertAt (const T &item, int index) = 0;
+    virtual Sequence<T> *Append (T item) = 0;
+    virtual Sequence<T> *Prepend (T item) = 0;
+    virtual Sequence<T> *InsertAt (T item, int index) = 0;
     virtual Sequence<T> *Concat (Sequence<T> &list) = 0;
 };
 

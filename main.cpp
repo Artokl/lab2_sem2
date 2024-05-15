@@ -3,7 +3,7 @@
 #include "TestsLinkedList.h"
 #include "TestsArraySequence.h"
 #include "TestsListSequence.h"
-#include "ui.h"
+#include "Ui.h"
 
 int main() {
     int status = 0;

@@ -49,7 +49,6 @@ public:
     {
         this->size = size;
         this->capacity = size+1;
-        this->elements = nullptr;
         if (size < 0)
         {
             throw std::out_of_range ("invalid size argument");

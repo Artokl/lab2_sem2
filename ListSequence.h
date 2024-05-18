@@ -124,7 +124,11 @@ public:
 
     ImmutableListSequence<T> *Concat(Sequence<T> &array) override
     {
-        MutableListSequence<T> *present = new MutableListSequence<T>;
+        MutableListSequence<T> *present = new MutableListSequence<T>();
+        for (int i = 0; i < this->GetLength (); i++)
+        {
+            present->Append (this->Get(i));
+        }
         for (int i = 0; i < array.GetLength(); i++)
         {
             present->Append(array.Get(i));
@@ -132,7 +136,7 @@ public:
         ImmutableListSequence<T> *result = new ImmutableListSequence<T>();
         for (int i = 0; i < present->GetLength (); i++)
         {
-            result->Append (present->Get (i));
+            result = static_cast<ImmutableListSequence<T> *> (result->Append(present->Get (i)));
         }
         delete present;
         return result;

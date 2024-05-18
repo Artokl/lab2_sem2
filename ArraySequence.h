@@ -14,6 +14,10 @@ public:
     {
         this->array = new DynamicArray<T>();
     }
+    ArraySequence(int count)
+    {
+        this->array = new DynamicArray<T>(count);
+    }
     ArraySequence(T *items, int count)
     {
         this->array = new DynamicArray<T>(items, count);
@@ -22,9 +26,9 @@ public:
     {
         this->array = new DynamicArray<T>(*seq.array);
     }
-    ArraySequence(DynamicArray<T> *array)
+    ArraySequence(const DynamicArray<T> *array)
     {
-        this->array = array;
+        this->array = new DynamicArray<T>(*array);;
     }
     ArraySequence(const DynamicArray<T> &array)
     {
@@ -111,30 +115,30 @@ template <typename T> class ImmutableArraySequence : public ArraySequence<T>
 private:
     ArraySequence<T> *GetInstance () override
     {
-        ImmutableArraySequence<T> *result = new ImmutableArraySequence (this->GetLength ());
-        for (int i = 0; i < this->GetLength (); i++)
+        ImmutableArraySequence<T> *result = new ImmutableArraySequence<T>();
+        for (int i = 0; i < this->GetLength(); i++)
         {
-            result->array[i] = this->array[i];
+            result->array->Set(this->array->Get(i), i);
         }
         return result;
     }
 public:
     using ArraySequence<T>::ArraySequence;
-    ImmutableArraySequence<T> *Concat (Sequence<T> &array) override
+    ImmutableArraySequence<T> *Concat (Sequence<T> &list) override
     {
         MutableArraySequence<T> *present = new MutableArraySequence<T> ();
         for (int i = 0; i < this->GetLength (); i++)
         {
             present->Append (this->Get (i));
         }
-        for (int i = 0; i < array.GetLength (); i++)
+        for (int i = 0; i < list.GetLength (); i++)
         {
-            present->Append (array.Get (i));
+            present->Append (list.Get (i));
         }
         ImmutableArraySequence<T> *result = new ImmutableArraySequence<T> ();
         for (int i = 0; i < present->GetLength (); i++)
         {
-            result->Append (present->Get (i));
+            result = static_cast<ImmutableArraySequence<T> *> (result->Append(present->Get (i)));
         }
         delete present;
         return result;
@@ -153,7 +157,7 @@ public:
         ImmutableArraySequence<T> *result = new ImmutableArraySequence<T> ();
         for (int i = 0; i < present->GetLength (); i++)
         {
-            result->Append (present->Get (i));
+            result = static_cast<ImmutableArraySequence<T> *> (result->Append(present->Get (i)));
         }
         delete present;
         return result;

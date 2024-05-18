@@ -68,33 +68,33 @@ void TestArraySequenceOperations()
 {
     int a[5] = {5, 4, 3, 2, 1};
     int b[3] = {8, 9, 10};
-    int c[] = {7, 5, 4, 8, 3, 2, 1, 6, 8, 9, 10};
+    int c[] = {5, 4, 3, 2, 1, 8, 9, 10};
     MutableArraySequence<int> test(a,5);
     MutableArraySequence<int> test1(b,3);
+    MutableArraySequence<int> *test2 = test.Concat(test1);
+    for (int i = 0; i < test2->GetLength(); i++)
+    {
+        assert(test2->Get(i) == c[i]);
+    }
     test.Append(6);
     assert(test.GetLast() == 6);
     test.Prepend(7);
     assert(test.GetFirst() == 7);
     test.InsertAt(8,3);
     assert(test.Get(3) == 8);
-    MutableArraySequence<int> *test2 = test.Concat(test1);
-    for (int i = 0; i < test2->GetLength(); i++)
-    {
-        assert(test2->Get(i) == c[i]);
-    }
     ImmutableArraySequence<int> test3(a,5);
     ImmutableArraySequence<int> test4(b,3);
+    ImmutableArraySequence<int> *test5 = test3.Concat(test4);
+    for (int i = 0; i < test5->GetLength(); i++)
+    {
+        assert(test5->Get(i) == c[i]);
+    }
     ImmutableArraySequence<int> *test6 = static_cast<ImmutableArraySequence<int> *>(test3.Append(6));
     assert(test6->GetLast() == 6);
     ImmutableArraySequence<int> *test7 = static_cast<ImmutableArraySequence<int> *>(test4.Prepend(7));
     assert(test7->GetFirst() == 7);
     ImmutableArraySequence<int> *test8 = static_cast<ImmutableArraySequence<int> *>(test3.InsertAt(8,2));
     assert(test8->Get(2) == 8);
-    ImmutableArraySequence<int> *test5 = test3.Concat(test4);
-    for (int i = 0; i < test5->GetLength(); i++)
-    {
-        assert(test5->Get(i) == c[i]);
-    }
 
 }
 void TestsArraySequence()
